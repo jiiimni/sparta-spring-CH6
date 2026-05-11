@@ -1,6 +1,7 @@
 package kr.spartaclub.spartaspringch6.domain.menu.controller;
 
 import kr.spartaclub.spartaspringch6.domain.menu.dto.MenuResponseDto;
+import kr.spartaclub.spartaspringch6.domain.menu.dto.PopularMenuResponseDto;
 import kr.spartaclub.spartaspringch6.domain.menu.service.MenuService;
 import kr.spartaclub.spartaspringch6.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public class MenuController {
     @GetMapping
     public ApiResponse<List<MenuResponseDto>> getMenus() {
         return ApiResponse.success(menuService.getMenus());
+    }
+
+    @GetMapping("/popular")
+    public ApiResponse<List<PopularMenuResponseDto>> getPopularMenus() {
+        return ApiResponse.success(menuService.getPopularMenus());
     }
 }

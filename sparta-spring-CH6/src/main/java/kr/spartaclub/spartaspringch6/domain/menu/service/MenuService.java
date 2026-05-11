@@ -5,7 +5,9 @@ import kr.spartaclub.spartaspringch6.domain.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import kr.spartaclub.spartaspringch6.domain.order.repository.OrderRepository;
+import kr.spartaclub.spartaspringch6.domain.menu.dto.PopularMenuResponseDto;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,25 @@ public class MenuService {
         return menuRepository.findAll()
                 .stream()
                 .map(MenuResponseDto::of)
+                .toList();
+    }
+
+    private final OrderRepository orderRepository;
+
+    @Transactional(readOnly = true)
+    public List<PopularMenuResponseDto> getPopularMenus() {
+        // 현재 시각 기준 7일 전부터 지금까지의 주문 집계
+        LocalDateTime since = LocalDateTime.now().minusDays(7);
+
+        // 상위 3개만 잘라서 반환
+        return orderRepository.findTopMenusSince(since)
+                .stream()
+                .limit(3)
+                .map(row -> new PopularMenuResponseDto(
+                        (Long) row[0],
+                        (String) row[1],
+                        (Long) row[2]
+                ))
                 .toList();
     }
 }
